@@ -90,6 +90,8 @@ a { color: inherit; }
 .topic-section:focus { outline: 2px solid var(--accent); outline-offset: 3px; }
 .topic-section__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; }
 .topic-title { margin: 0; font-size: clamp(2rem, 3.8vw, 3rem); font-weight: 600; letter-spacing: -0.04em; line-height: 1.12; }
+.topic-repository-link { display: inline-block; margin-top: 0.45rem; color: var(--muted); font-size: 0.88rem; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 0.2rem; }
+.topic-repository-link:hover, .topic-repository-link:focus-visible { color: var(--accent); text-decoration-color: currentColor; }
 .subtopic-list { display: grid; gap: 1.25rem; }
 .subtopic-section { scroll-margin-top: 1.5rem; }
 .subtopic-section:focus { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -97,6 +99,163 @@ a { color: inherit; }
 .subtopic-weeks, .topic-weeks { margin: 0.25rem 0 0; color: var(--muted); font-family: var(--mono); font-size: 0.72rem; }
 .topic-weeks { margin: 0; }
 .subtopic-details { margin: 0.5rem 0 0; padding-inline-start: 1.2rem; color: var(--ink-soft); font-size: 0.92rem; }
+
+/* Foundation uses a topic-specific editorial layout; other topics keep the shared list. */
+.foundation-intro { max-width: 48rem; margin: -0.4rem 0 1.8rem; color: var(--ink-soft); font-size: 1.12rem; }
+.foundation-main { display: grid; grid-template-columns: minmax(10rem, 11.5rem) minmax(0, 1fr); align-items: center; gap: clamp(1.5rem, 4vw, 3.5rem); }
+.foundation-main__figure, .foundation-subtopic__figure { min-width: 0; margin: 0; }
+.foundation-media-frame { display: grid; width: min(100%, 20rem); aspect-ratio: 4 / 3; max-height: 15rem; place-items: center; overflow: hidden; padding: 0; border: 0; background: #edf1f3; cursor: zoom-in; }
+.foundation-main__figure { grid-column: 1; grid-row: 1; }
+.foundation-main .foundation-media-frame { width: min(100%, 11.5rem); max-height: 8.625rem; }
+.foundation-subtopic--company { grid-column: 2; grid-row: 1; }
+.foundation-media-frame:hover, .foundation-media-frame:focus-visible { outline: 2px solid var(--line); outline-offset: 3px; }
+.foundation-image { display: block; width: 100%; height: 100%; }
+.foundation-image--company-department-orientation { object-fit: cover; }
+.foundation-image--rules-safety-policies { object-fit: contain; }
+.foundation-image--factory-layout { object-fit: cover; }
+.foundation-subtopic .subtopic-title { font-size: 1.22rem; }
+.foundation-description { margin: 0.7rem 0 0; max-width: 42rem; color: var(--ink-soft); }
+.foundation-external-link { display: inline-block; margin-top: 0.8rem; color: var(--muted); font-size: 0.88rem; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 0.2rem; }
+.foundation-external-link:hover, .foundation-external-link:focus-visible { color: var(--accent); text-decoration-color: currentColor; }
+.foundation-subtopic--text-only { max-width: 48rem; margin-top: 1.8rem; padding-top: 1.4rem; border-top: 1px solid var(--line); }
+.foundation-support { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.5rem, 4vw, 3rem); margin-top: 2rem; padding-top: 1.8rem; border-top: 1px solid var(--line); }
+.foundation-subtopic--supporting { min-width: 0; }
+.foundation-subtopic--supporting .foundation-subtopic__figure { margin-top: 0.8rem; }
+.foundation-caption { margin: 0.45rem 0 0; color: var(--muted); font-size: 0.78rem; }
+.foundation-image-viewer { position: fixed; inset: 0; display: grid; width: min(94vw, 68rem); max-width: none; max-height: 94vh; grid-template-rows: minmax(0, 1fr) auto; justify-items: center; gap: 0.6rem; overflow: visible; padding: 2.8rem 1rem 0.8rem; border: 0; background: #fff; color: var(--ink); }
+.foundation-image-viewer:not([open]) { display: none; }
+.foundation-image-viewer::backdrop { background: rgb(12 26 36 / 78%); }
+.foundation-image-viewer__image { display: block; width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+.foundation-image-viewer__caption { max-width: 100%; margin: 0; color: var(--muted); font-size: 0.82rem; text-align: center; }
+.foundation-image-viewer__close { position: absolute; top: 0.35rem; right: 0.5rem; display: grid; width: 2.2rem; height: 2.2rem; place-items: center; padding: 0; border: 0; background: transparent; color: var(--ink); cursor: pointer; font-size: 1.8rem; line-height: 1; }
+
+/* Manufacturing keeps its five Subtopics while grouping them into a learning progression. */
+.manufacturing-intro { max-width: 48rem; margin: -0.4rem 0 1.8rem; color: var(--ink-soft); font-size: 1.12rem; }
+.manufacturing-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.5rem, 4vw, 3rem); }
+.manufacturing-row + .manufacturing-row, .manufacturing-item--automation { margin-top: 2rem; padding-top: 1.8rem; border-top: 1px solid var(--line); }
+.manufacturing-item { display: grid; min-width: 0; grid-template-rows: minmax(2.7em, auto) auto auto 1fr; }
+.manufacturing-item .subtopic-title { font-size: 1.22rem; }
+.manufacturing-item .subtopic-weeks { min-height: 1.2em; }
+.manufacturing-item .foundation-subtopic__figure { margin-top: 0.8rem; }
+#topic-manufacturing .manufacturing-item .foundation-media-frame { width: min(100%, 24rem); aspect-ratio: 4 / 3; max-height: 15rem; }
+#topic-manufacturing .manufacturing-item--process-product .foundation-media-frame,
+#topic-manufacturing .manufacturing-item--production-line .foundation-media-frame { aspect-ratio: 16 / 10; }
+.manufacturing-item--technical .foundation-media-frame { aspect-ratio: 16 / 9; }
+#topic-manufacturing .foundation-image--process-product, #topic-manufacturing .foundation-image--production-line, #topic-manufacturing .foundation-image--automation-system { object-fit: cover; }
+#topic-manufacturing .foundation-image--artwork-drawings, #topic-manufacturing .foundation-image--gstar-cad-measurement { object-fit: contain; }
+.manufacturing-item .foundation-media-frame:focus-visible { outline-color: var(--accent); }
+.manufacturing-description { margin: 0.7rem 0 0; max-width: 42rem; color: var(--ink-soft); }
+.manufacturing-item--automation { grid-template-columns: minmax(10rem, 11.5rem) minmax(0, 1fr); grid-template-rows: auto auto 1fr; column-gap: clamp(1.5rem, 4vw, 3rem); }
+.manufacturing-item--automation .subtopic-title { grid-column: 2; grid-row: 1; }
+.manufacturing-item--automation .subtopic-weeks { grid-column: 2; grid-row: 2; }
+.manufacturing-item--automation .foundation-subtopic__figure { grid-column: 1; grid-row: 1 / 4; margin-top: 0; }
+.manufacturing-item--automation .foundation-media-frame { width: 100%; }
+.manufacturing-item--automation .manufacturing-description { grid-column: 2; grid-row: 3; }
+
+/* MSA keeps Calibration compact and groups the four measurement analyses. */
+.msa-intro { max-width: 48rem; margin: -0.4rem 0 1.8rem; color: var(--ink-soft); font-size: 1.12rem; }
+.msa-subtopic { min-width: 0; }
+.msa-calibration { display: grid; grid-template-columns: minmax(9rem, 11.5rem) minmax(0, 1fr); grid-template-rows: auto auto 1fr; align-items: start; column-gap: clamp(1.5rem, 4vw, 3rem); }
+.msa-calibration .subtopic-title, .msa-calibration .subtopic-weeks, .msa-calibration .msa-description { grid-column: 2; }
+.msa-calibration .subtopic-title { grid-row: 1; }
+.msa-calibration .subtopic-weeks { grid-row: 2; }
+.msa-calibration .foundation-subtopic__figure { grid-column: 1; grid-row: 1 / 4; margin: 0; }
+.msa-calibration .foundation-media-frame { width: min(100%, 11.5rem); aspect-ratio: 4 / 3; max-height: 8.625rem; }
+.msa-calibration .foundation-image { object-fit: cover; object-position: center 100%; }
+.msa-calibration .msa-description { grid-row: 3; }
+.msa-analyses { margin-top: 2rem; padding-top: 1.8rem; border-top: 1px solid var(--line); }
+.msa-group-title { margin: 0 0 1.2rem; color: var(--ink-soft); font-size: 1rem; font-weight: 560; }
+.msa-analysis-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.8rem clamp(1.5rem, 4vw, 3rem); }
+.msa-analysis { display: grid; grid-template-rows: auto auto auto 1fr; }
+.msa-analysis .subtopic-weeks { min-height: 1.2em; }
+.msa-analysis .foundation-subtopic__figure { margin-top: 0.8rem; }
+.msa-analysis .foundation-media-frame { width: min(100%, 24rem); aspect-ratio: 16 / 9; max-height: 13.5rem; }
+.msa-analysis .foundation-image { object-fit: cover; object-position: center 100%; }
+.msa-description { margin: 0.7rem 0 0; max-width: 42rem; color: var(--ink-soft); }
+
+/* DOE uses two compact experimental case studies with normalized source-image frames. */
+.doe-intro { max-width: 48rem; margin: -0.4rem 0 1.8rem; color: var(--ink-soft); font-size: 1.12rem; }
+.doe-case-study + .doe-case-study { margin-top: 2.2rem; padding-top: 1.8rem; border-top: 1px solid var(--line); }
+.doe-case-title { margin: 0 0 0.25rem; font-size: 1.35rem; font-weight: 600; }
+.doe-case-study > .subtopic-weeks { margin-bottom: 1rem; }
+.doe-kansai-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; gap: clamp(1.5rem, 4vw, 3rem); }
+.doe-kansai-top .foundation-subtopic__figure, .doe-kansai-results .foundation-subtopic__figure, .doe-peel-activities .foundation-subtopic__figure, .doe-peel-result .foundation-subtopic__figure { min-width: 0; margin: 0; }
+.doe-kansai-top .foundation-media-frame { width: 100%; aspect-ratio: 4 / 3; max-height: 17rem; }
+.doe-description { margin: 0; max-width: 42rem; color: var(--ink-soft); }
+.doe-details { margin: 0.8rem 0 0; padding-inline-start: 1.15rem; color: var(--ink-soft); }
+.doe-details li + li { margin-top: 0.25rem; }
+.doe-results-label, .doe-activity-label { margin: 1.4rem 0 0.65rem; color: var(--muted); font-size: 0.88rem; font-weight: 550; }
+.doe-kansai-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2rem); }
+.doe-kansai-results .foundation-media-frame { width: 100%; aspect-ratio: 16 / 10; max-height: 15rem; }
+.doe-peel > .doe-description { margin-bottom: 1rem; }
+.doe-peel-activities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.5vw, 1.8rem); }
+.doe-peel-activity { min-width: 0; }
+.doe-peel-activity .doe-activity-label { margin-top: 0; }
+.doe-peel-activity .foundation-media-frame { width: 100%; aspect-ratio: 4 / 3; max-height: 14rem; }
+.doe-process { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; margin: 1rem 0 0.2rem; color: var(--ink-soft); font-size: 0.92rem; }
+.doe-process + .doe-results-label { margin-top: 1rem; }
+.doe-peel-result { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(12rem, 0.6fr); align-items: center; gap: clamp(1rem, 3vw, 2rem); }
+.doe-peel-result .foundation-media-frame { width: 100%; aspect-ratio: 16 / 9; max-height: 15rem; }
+.doe-detail-note { margin: 0; color: var(--ink-soft); }
+#topic-doe .foundation-image { object-fit: contain; }
+#topic-doe .foundation-media-frame { background: #edf1f3; }
+#topic-doe .foundation-media-frame:hover, #topic-doe .foundation-media-frame:focus-visible { outline-color: var(--accent); }
+
+/* AI & SWE presents five learning Subtopics as a compact progression. */
+.ai-swe-expansion { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.88rem; }
+.ai-swe-intro { max-width: 48rem; margin: -0.4rem 0 1.5rem; color: var(--ink-soft); font-size: 1.08rem; }
+.ai-swe-subtopic { min-width: 0; }
+.ai-swe-subtopic + .ai-swe-subtopic { margin-top: 1.6rem; }
+.ai-swe-subtopic .subtopic-title { margin-bottom: 0.2rem; font-size: 1.18rem; }
+.ai-swe-subtopic .subtopic-weeks { margin-bottom: 0.7rem; }
+.ai-swe-description { margin: 0.55rem 0 0; color: var(--ink-soft); }
+.ai-swe-git-images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2rem); }
+.ai-swe-git-image .foundation-media-frame { width: 100%; aspect-ratio: 16 / 9; max-height: 14rem; }
+.ai-swe-concepts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem clamp(1.5rem, 4vw, 3rem); margin-top: 0.9rem; }
+.ai-swe-concept { min-width: 0; padding-top: 0.55rem; border-top: 1px solid var(--line); }
+.ai-swe-concept__term { margin: 0; color: var(--ink); font-size: 1rem; font-weight: 600; }
+.ai-swe-concept__meaning { margin: 0.15rem 0 0; color: var(--ink-soft); font-size: 0.92rem; }
+.ai-swe-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin: 0.8rem 0 0; padding: 0; list-style: none; color: var(--ink-soft); }
+.ai-swe-flow li { display: inline-flex; align-items: center; gap: 0.45rem; }
+.ai-swe-flow li:not(:last-child)::after { content: "→"; color: var(--muted); }
+.ai-swe-haws { margin-top: 2rem !important; padding-top: 1.6rem; border-top: 1px solid var(--line); }
+.ai-swe-haws-top { display: grid; grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); align-items: center; gap: clamp(1.5rem, 4vw, 3rem); }
+.ai-swe-haws-image .foundation-media-frame { width: min(100%, 22rem); aspect-ratio: 16 / 10; max-height: 12rem; }
+.ai-swe-haws-copy .ai-swe-flow { margin-top: 0.8rem; }
+#topic-ai-swe-fundamentals .foundation-image { object-fit: contain; }
+#topic-ai-swe-fundamentals .foundation-media-frame { background: #edf1f3; }
+#topic-ai-swe-fundamentals .foundation-media-frame:hover, #topic-ai-swe-fundamentals .foundation-media-frame:focus-visible { outline-color: var(--accent); }
+
+/* Machine Setup keeps the shared Subtopic hierarchy and compact media frames. */
+.machine-setup-intro { max-width: 48rem; margin: -0.4rem 0 1.5rem; color: var(--ink-soft); font-size: 1.08rem; }
+.machine-setup-item { min-width: 0; }
+.machine-setup-description { margin: 0.55rem 0 0; max-width: 46rem; color: var(--ink-soft); }
+.machine-setup-single-image .foundation-media-frame { width: min(100%, 22rem); aspect-ratio: 4 / 3; max-height: 15rem; }
+.machine-setup-camera-images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2rem); }
+.machine-setup-camera-image .foundation-media-frame { width: 100%; aspect-ratio: 4 / 3; max-height: 15rem; }
+.machine-setup-details { margin: 0.55rem 0 0; color: var(--muted); font-size: 0.88rem; }
+.machine-setup-item--qr-code-setup-classification .foundation-external-link { margin-top: 0.45rem; }
+.machine-setup-flow { margin: 0.8rem 0 0; color: var(--ink-soft); font-size: 0.92rem; }
+.machine-setup-result-title { margin: 1rem 0 0.6rem; font-size: 1rem; font-weight: 550; }
+.machine-setup-cpk-image { min-width: 0; margin: 0; }
+.machine-setup-cpk-image .foundation-media-frame { width: min(100%, 42rem); aspect-ratio: 16 / 10; max-height: 17rem; }
+.machine-setup-result-note { margin: 0.45rem 0 0; color: var(--muted); font-size: 0.88rem; }
+#topic-machine-setup .foundation-image { object-fit: contain; }
+#topic-machine-setup .foundation-media-frame { background: #edf1f3; }
+#topic-machine-setup .foundation-media-frame:hover, #topic-machine-setup .foundation-media-frame:focus-visible { outline-color: var(--accent); }
+
+/* Workshop presents four practical activities as a compact photo journal. */
+.workshop-intro { max-width: 48rem; margin: -0.4rem 0 1.8rem; color: var(--ink-soft); font-size: 1.12rem; }
+.workshop-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.8rem clamp(1.5rem, 4vw, 3rem); }
+.workshop-item { min-width: 0; }
+.workshop-item .subtopic-title { font-size: 1.22rem; }
+.workshop-item .subtopic-weeks { margin-bottom: 0.7rem; }
+.workshop-item__figure { min-width: 0; margin: 0; }
+.workshop-item .foundation-media-frame { width: 100%; aspect-ratio: 4 / 3; max-height: 17rem; }
+#topic-workshop .foundation-image { object-fit: contain; }
+#topic-workshop .foundation-media-frame { background: #edf1f3; }
+#topic-workshop .foundation-media-frame:hover, #topic-workshop .foundation-media-frame:focus-visible { outline-color: var(--accent); }
+.workshop-description { margin: 0.65rem 0 0; max-width: 42rem; color: var(--ink-soft); }
 
 .swot-section { padding-block: clamp(4.5rem, 8vw, 6.5rem); }
 .swot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid #48646a; border-left: 1px solid #48646a; }
@@ -133,6 +292,63 @@ a { color: inherit; }
   .gantt-week-column { width: 3rem; }
   .topic-section { padding-block: 3rem; }
   .topic-section__header { align-items: flex-start; }
+  .foundation-intro { margin-bottom: 1.4rem; }
+  .foundation-main, .foundation-support { grid-template-columns: 1fr; }
+  .foundation-main { gap: 0.8rem; }
+  .foundation-main__figure, .foundation-subtopic--company { grid-column: 1; }
+  .foundation-main__figure { grid-row: 2; }
+  .foundation-subtopic--company { grid-row: 1; }
+  .foundation-subtopic--text-only { margin-top: 1.4rem; }
+  .foundation-support { gap: 1.6rem; margin-top: 1.6rem; }
+  .foundation-subtopic--supporting .foundation-subtopic__figure { margin-top: 0.6rem; }
+  .foundation-image-viewer { width: 100vw; max-height: 94vh; padding-inline: 0.7rem; }
+  .manufacturing-intro { margin-bottom: 1.4rem; }
+  .manufacturing-row { grid-template-columns: 1fr; gap: 1.6rem; }
+  .manufacturing-row + .manufacturing-row, .manufacturing-item--automation { margin-top: 1.6rem; padding-top: 1.4rem; }
+  .manufacturing-item { grid-template-rows: auto auto auto auto; }
+  .manufacturing-item .subtopic-title { min-height: 0; }
+  .manufacturing-item--automation { grid-template-columns: 1fr; }
+  .manufacturing-item--automation .subtopic-title, .manufacturing-item--automation .subtopic-weeks, .manufacturing-item--automation .foundation-subtopic__figure, .manufacturing-item--automation .manufacturing-description { grid-column: 1; grid-row: auto; }
+  .manufacturing-item--automation .foundation-subtopic__figure { margin-top: 0.8rem; }
+  .msa-intro { margin-bottom: 1.4rem; }
+  .msa-calibration { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto; row-gap: 0; }
+  .msa-calibration .subtopic-title, .msa-calibration .subtopic-weeks, .msa-calibration .foundation-subtopic__figure, .msa-calibration .msa-description { grid-column: 1; grid-row: auto; }
+  .msa-calibration .foundation-subtopic__figure { margin-top: 0.8rem; }
+  .msa-analyses { margin-top: 1.6rem; padding-top: 1.4rem; }
+  .msa-analysis-grid { grid-template-columns: 1fr; gap: 1.6rem; }
+  .msa-analysis .foundation-media-frame { width: min(100%, 24rem); max-height: 13.5rem; }
+  .doe-intro { margin-bottom: 1.4rem; }
+  .doe-case-study + .doe-case-study { margin-top: 1.7rem; padding-top: 1.4rem; }
+  .doe-kansai-top, .doe-kansai-results, .doe-peel-activities, .doe-peel-result { grid-template-columns: 1fr; }
+  .doe-kansai-top { gap: 0.8rem; }
+  .doe-kansai-top .foundation-media-frame { width: min(100%, 24rem); max-height: 13rem; }
+  .doe-results-label { margin-top: 1.1rem; }
+  .doe-kansai-results { gap: 1rem; }
+  .doe-kansai-results .foundation-media-frame { max-height: 13rem; }
+  .doe-peel-activities { gap: 1rem; }
+  .doe-peel-activity .foundation-media-frame { width: min(100%, 24rem); max-height: 13rem; }
+  .doe-process { justify-content: flex-start; font-size: 0.88rem; }
+  .doe-peel-result { gap: 0.7rem; }
+  .doe-peel-result .foundation-media-frame { width: min(100%, 32rem); max-height: 13rem; }
+  .ai-swe-expansion { margin-top: 0.1rem; }
+  .ai-swe-intro { margin-bottom: 1.2rem; }
+  .ai-swe-subtopic + .ai-swe-subtopic { margin-top: 1.3rem; }
+  .ai-swe-git-images, .ai-swe-concepts, .ai-swe-haws-top { grid-template-columns: 1fr; }
+  .ai-swe-git-images { gap: 0.9rem; }
+  .ai-swe-git-image .foundation-media-frame { width: min(100%, 32rem); max-height: 13rem; }
+  .ai-swe-concepts { gap: 0.65rem 1rem; }
+  .ai-swe-flow { gap: 0.35rem; }
+  .ai-swe-flow li { gap: 0.35rem; }
+  .ai-swe-haws { margin-top: 1.6rem !important; padding-top: 1.3rem; }
+  .ai-swe-haws-top { gap: 0.7rem; }
+  .ai-swe-haws-image .foundation-media-frame { width: min(100%, 24rem); max-height: 12rem; }
+  .machine-setup-intro { margin-bottom: 1.2rem; }
+  .machine-setup-camera-images { grid-template-columns: 1fr; gap: 0.8rem; }
+  .machine-setup-single-image .foundation-media-frame, .machine-setup-camera-image .foundation-media-frame { width: min(100%, 32rem); max-height: 13rem; }
+  .machine-setup-cpk-image .foundation-media-frame { width: min(100%, 34rem); max-height: 13rem; }
+  .workshop-intro { margin-bottom: 1.4rem; }
+  .workshop-grid { grid-template-columns: 1fr; gap: 1.6rem; }
+  .workshop-item .foundation-media-frame { width: min(100%, 32rem); max-height: 15rem; }
   .swot-grid { grid-template-columns: 1fr; }
   .swot-card { min-height: 9rem; }
 }
