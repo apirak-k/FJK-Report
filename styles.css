@@ -317,11 +317,8 @@ a { color: inherit; }
 .subtopic-list:has(.cbd-purpose) { display: block; }
 .cbd-overview, .cbd-platform, .cbd-calculation, .cbd-analysis, .cbd-final-result { margin-top: 1.7rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
 .cbd-overview-flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; gap: 0.45rem 1.15rem; margin: 0; padding: 0; list-style: none; counter-reset: cbd-flow; }
-.cbd-overview-step { position: relative; display: grid; min-height: 2.6rem; flex: 1 1 8.5rem; align-content: center; padding: 0.45rem 0.55rem 0.45rem 1.8rem; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 0.78rem; counter-increment: cbd-flow; }
+.cbd-overview-step { position: relative; display: grid; min-height: 2.6rem; align-content: center; padding: 0.45rem 0.55rem 0.45rem 1.8rem; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 0.78rem; counter-increment: cbd-flow; }
 .cbd-overview-step::before { position: absolute; left: 0.5rem; color: var(--accent); content: counter(cbd-flow, decimal-leading-zero); font: 0.7rem var(--mono); }
-.cbd-overview-step:not(:last-child)::after { position: absolute; right: -0.9rem; color: var(--accent); content: "→"; }
-.cbd-overview-step:nth-child(3n)::after { top: calc(100% - 0.2rem); right: auto; bottom: -0.35rem; left: 0.55rem; content: "↓"; }
-.cbd-overview-step:last-child::after { content: none; }
 .cbd-flow-note, .cbd-missing-note, .cbd-identities, .cbd-reconciliation { margin: 0.65rem 0 0; color: var(--muted); font-size: 0.77rem; line-height: 1.5; }
 .cbd-platform .foundation-media-frame { width: min(100%, 54rem); aspect-ratio: 16 / 9; max-height: 22rem; }
 .cbd-platform > .topic-repository-link { margin-top: 0.45rem; }
@@ -487,7 +484,6 @@ a { color: inherit; }
   .cbd-overview, .cbd-platform, .cbd-calculation, .cbd-analysis, .cbd-final-result { margin-top: 1.4rem; padding-top: 1.05rem; }
   .cbd-overview-flow { grid-template-columns: 1fr; gap: 0.25rem; }
   .cbd-overview-step { min-height: 2.25rem; }
-  .cbd-overview-step:not(:last-child)::after { top: calc(100% - 0.15rem); right: auto; bottom: -0.35rem; left: 0.55rem; content: "↓"; }
   .cbd-branches { grid-template-columns: 1fr; gap: 0.8rem; }
   .cbd-ownership { grid-template-columns: 1fr; }
   .cbd-labor-burden { grid-template-columns: 1fr; }

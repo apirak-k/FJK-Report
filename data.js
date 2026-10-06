@@ -64,8 +64,8 @@ window.presentationData = {
     // TODO: Subtopics are not confirmed; active weeks keep Topic-level Gantt markers.
     {
       id: "jig-stock", title: "JIG STOCK", repository: "https://github.com/apirak-k/JIGSTOCK", activeWeeks: [2, 3, 4, 5, 6, 7], showActiveWeeks: true,
-      purpose: "Manage Jigroom material stock and material requests.",
-      overviewSteps: ["Find Material", "Submit Request", "Approval", "Warehouse Issue", "Stock Updated", "Confirm Receipt", "Complete"],
+      purpose: "Manage Jigroom inventory and material requests.",
+      overviewSteps: ["Find Material", "Submit Request", "Approval", "Material Issue", "Stock Updated", "Confirm Receipt", "Complete"],
       supportingAreas: "Also includes inventory views, reorder planning, purchasing, reports, and audit history.",
       issueLogic: {
         checks: "Permission · Approved · Required Date · Available Stock",

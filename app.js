@@ -179,7 +179,7 @@
     flow.setAttribute("aria-label", "JIGSTOCK material request flow");
     topic.overviewSteps.forEach(function (step) {
       const item = element("li", "jig-stock-overview-step", step);
-      if (step === "Warehouse Issue") item.append(renderJigIssueLogic(topic.issueLogic, topic.issueNote));
+      if (step === "Material Issue") item.append(renderJigIssueLogic(topic.issueLogic, topic.issueNote));
       flow.append(item);
     });
     overview.append(flow, element("p", "jig-stock-supporting-areas", topic.supportingAreas));
@@ -281,7 +281,7 @@
     const branches = element("div", "cbd-branches");
     branches.append(material, processing);
     const total = element("div", "cbd-cost-total");
-    total.append(element("span", "cbd-standard-components", "Direct Material + Labor + Burden"), element("strong", "cbd-cost-total-title", "Standard Cost"), element("span", "cbd-cost-total-formula", "= Direct Material + Conversion"), element("small", "cbd-conversion-note", "Per piece · Conversion = Labor + Burden"));
+    total.append(element("strong", "cbd-cost-total-title", "Standard Cost"), element("span", "cbd-standard-components", "Standard Cost = Direct Material + Labor + Burden"), element("span", "cbd-cost-total-formula", "Equivalent: Standard Cost = Direct Material + Conversion"), element("small", "cbd-conversion-note", "Per piece · Conversion = Labor + Burden"));
     calculation.append(branches, total, element("p", "cbd-missing-note", "Missing or invalid required input = unavailable, not zero. Explicit numeric zero is valid; ADDED / REMOVED use zero only on the absent side."));
 
     const analysis = element("section", "cbd-analysis");
