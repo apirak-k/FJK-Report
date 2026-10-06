@@ -52,7 +52,7 @@ window.presentationData = {
           ]
         },
         {
-          id: "sample-preparation-peel-test", title: "Sample Preparation & Peel Test", weeks: [5, 11, 12, 15, 16], description: "Prepared samples, performed peel testing, and evaluated the test results.", details: ["Meeting with Japanese Engineers"], images: [
+          id: "sample-preparation-peel-test", title: "Sample Preparation & Peel Test", weeks: [5, 11, 12, 15, 16], description: "Prepared samples, performed peel testing, and evaluated the test results.", meeting: { title: "Meeting with Japanese Engineers", description: "Discussed sample preparation and Peel Test planning." }, images: [
             { id: "doe-peel-sample-preparation", title: "Sample preparation", image: "assets/doe/doe-peel-sample-preparation.jpg", imageAlt: "Prepared samples for peel testing" },
             { id: "doe-peel-test", title: "Peel test", image: "assets/doe/doe-peel-test.jpg", imageAlt: "Peel testing activity" },
             { id: "doe-peel-tested-samples", title: "Tested samples", image: "assets/doe/doe-peel-tested-samples.jpg", imageAlt: "Samples after peel testing" },
@@ -64,15 +64,13 @@ window.presentationData = {
     // TODO: Subtopics are not confirmed; active weeks keep Topic-level Gantt markers.
     {
       id: "jig-stock", title: "JIG STOCK", repository: "https://github.com/apirak-k/JIGSTOCK", activeWeeks: [2, 3, 4, 5, 6, 7], showActiveWeeks: true,
-      purpose: "JIGSTOCK organizes material information and stock workflows for the Jigroom. It helps users find current stock and follow material requests through issue and receipt confirmation.",
-      overviewSteps: ["Find material", "Submit request", "Approval", "Warehouse issues", "Confirm receipt"],
+      purpose: "Manage Jigroom material stock and material requests.",
+      overviewSteps: ["Find Material", "Submit Request", "Approval", "Warehouse Issue", "Stock Updated", "Confirm Receipt", "Complete"],
       supportingAreas: "Also includes inventory views, reorder planning, purchasing, reports, and audit history.",
       issueLogic: {
-        action: "Warehouse selects an approved request",
-        checks: "Permission · approved status · required date · available stock",
-        blocked: "Checks fail → Show an error; leave data unchanged",
-        passed: "Checks pass → Deduct stock; record the Issue transaction and audit",
-        persistence: ""
+        checks: "Permission · Approved · Required Date · Available Stock",
+        blocked: "Invalid → Show error · Stock unchanged",
+        passed: "Valid → Deduct stock · Record Issue / audit"
       },
       issueNote: "Stock is deducted at Issue. Approval and receipt confirmation do not deduct it again.",
       screenshot: "assets/jig-stock/jigstock-dashboard.png",

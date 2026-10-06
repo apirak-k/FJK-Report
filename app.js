@@ -37,17 +37,13 @@
         const header = document.querySelector("#topic-" + topic.id + " .topic-section__header");
         header.append(element("p", "topic-weeks", formatWeeks(topic.activeWeeks)));
       }
-      if (topic.repository && topic.id !== "jig-stock") {
+      if (topic.repository && topic.id !== "jig-stock" && topic.id !== "cost-breakdown") {
         const headerContent = document.querySelector("#topic-" + topic.id + " .topic-section__header > div");
         const repository = element("a", "topic-repository-link", "View Repository ↗");
         repository.href = topic.repository;
         repository.target = "_blank";
         repository.rel = "noopener noreferrer";
         headerContent.append(repository);
-      }
-      if (topic.id === "cost-breakdown") {
-        const headerContent = document.querySelector("#topic-" + topic.id + " .topic-section__header > div");
-        headerContent.append(renderDemoLauncher(topic.id));
       }
       if (topic.id === "jig-stock") {
         renderJigStock(topic, container);
@@ -177,12 +173,15 @@
     const purpose = element("section", "jig-stock-purpose");
     purpose.append(element("h4", "jig-stock-section-title", "Purpose"), element("p", "jig-stock-purpose-text", topic.purpose));
 
-    const top = element("div", "jig-stock-top");
     const overview = element("section", "jig-stock-overview");
-    overview.append(element("h4", "jig-stock-section-title", "System Overview"));
+    overview.append(element("h4", "jig-stock-section-title", "System Flow"));
     const flow = element("ol", "jig-stock-overview-flow");
     flow.setAttribute("aria-label", "JIGSTOCK material request flow");
-    topic.overviewSteps.forEach(function (step) { flow.append(element("li", "jig-stock-overview-step", step)); });
+    topic.overviewSteps.forEach(function (step) {
+      const item = element("li", "jig-stock-overview-step", step);
+      if (step === "Warehouse Issue") item.append(renderJigIssueLogic(topic.issueLogic, topic.issueNote));
+      flow.append(item);
+    });
     overview.append(flow, element("p", "jig-stock-supporting-areas", topic.supportingAreas));
 
     const platform = element("section", "jig-stock-platform");
@@ -200,27 +199,25 @@
     repository.target = "_blank";
     repository.rel = "noopener noreferrer";
     platform.append(repository, renderDemoLauncher(topic.id));
-    top.append(overview, platform);
-
-    const logic = element("section", "jig-stock-logic");
-    logic.append(element("h4", "jig-stock-section-title", "How JIGSTOCK Works"));
-    const logicFlow = element("div", "jig-stock-logic-flow");
-    const action = element("div", "jig-stock-logic-step", topic.issueLogic.action);
-    const checks = element("div", "jig-stock-logic-step", topic.issueLogic.checks);
-    const outcomes = element("div", "jig-stock-logic-outcomes");
-    outcomes.append(
-      element("p", "jig-stock-logic-blocked", topic.issueLogic.blocked),
-      element("p", "jig-stock-logic-passed", topic.issueLogic.passed)
-    );
-    logicFlow.append(action, checks, outcomes);
-    logic.append(logicFlow, element("p", "jig-stock-issue-note", topic.issueNote));
 
     const result = element("section", "jig-stock-result");
     result.append(element("h4", "jig-stock-section-title", "Result"));
     const resultList = element("ul", "jig-stock-result-list");
     topic.results.forEach(function (item) { resultList.append(element("li", "jig-stock-result-item", item)); });
     result.append(resultList);
-    container.append(purpose, top, logic, result);
+    container.append(purpose, overview, platform, result);
+  }
+
+  function renderJigIssueLogic(issueLogic, issueNote) {
+    const logic = element("div", "jig-stock-issue-logic");
+    logic.append(element("span", "jig-stock-check-label", "Check"), element("span", "jig-stock-checks", issueLogic.checks));
+    const outcomes = element("div", "jig-stock-issue-outcomes");
+    outcomes.append(
+      element("p", "jig-stock-issue-valid", issueLogic.passed),
+      element("p", "jig-stock-issue-invalid", issueLogic.blocked)
+    );
+    logic.append(outcomes, element("p", "jig-stock-issue-note", issueNote));
+    return logic;
   }
 
   function renderCostBreakdown(topic, container) {
@@ -228,21 +225,13 @@
     purpose.append(element("h4", "jig-stock-section-title", "Purpose"), element("p", "jig-stock-purpose-text", "Find what changed in product cost, understand why, and evaluate improvement options."));
 
     const overview = element("section", "cbd-overview");
-    overview.append(element("h4", "jig-stock-section-title", "System Overview"));
-    const snapshots = element("div", "cbd-snapshots");
-    ["Reference", "Current"].forEach(function (snapshotName) {
-      const snapshot = element("div", "cbd-snapshot");
-      snapshot.append(element("strong", "cbd-snapshot-title", snapshotName));
-      const inputs = element("div", "cbd-snapshot-inputs");
-      ["BOM", "Work Center", "Routing"].forEach(function (input) { inputs.append(element("span", "cbd-input", input)); });
-      snapshot.append(inputs);
-      snapshots.append(snapshot);
-    });
+    overview.append(element("h4", "jig-stock-section-title", "System Flow"));
     const overviewFlow = element("ol", "cbd-overview-flow");
-    ["Cost Breakdown", "Find cost changes", "Ranking / Candidate", "RCA", "Simulation A / B", "Result"].forEach(function (step) {
+    overviewFlow.setAttribute("aria-label", "Cost Breakdown analysis and simulation flow");
+    ["Reference + Current", "Cost Breakdown", "Find Cost Changes", "Ranking / Candidate", "Choose One Candidate", "RCA", "Scenario A / Scenario B", "Select One Scenario", "Result"].forEach(function (step) {
       overviewFlow.append(element("li", "cbd-overview-step", step));
     });
-    overview.append(snapshots, overviewFlow, element("p", "cbd-transition", "Reference → Current → Simulated"));
+    overview.append(overviewFlow, element("p", "cbd-flow-note", "Candidates: BOM or Process / Routing. Work Center is rate context."));
 
     const platform = element("section", "cbd-platform");
     platform.append(element("h4", "jig-stock-section-title", "Platform / UI"));
@@ -251,60 +240,70 @@
       const figure = renderFoundationImage({ id: "cost-breakdown-platform", title: "Cost Breakdown workspace", image: screenshotPath, imageAlt: "Cost Breakdown comparison workspace" });
       figure.classList.add("cbd-screenshot");
       platform.append(figure);
-    } else {
-      platform.append(element("div", "cbd-screenshot-placeholder", "Add a confirmed CBD comparison workspace screenshot here."));
+      platform.append(element("p", "jig-stock-screenshot-description", "Compare Reference and Current cost components and inspect the resulting gap."));
     }
-    if (screenshotPath) platform.append(element("p", "jig-stock-screenshot-description", "Compare Reference and Current cost components and inspect the resulting gap."));
     const repository = element("a", "topic-repository-link", "View Repository ↗");
     repository.href = topic.repository;
     repository.target = "_blank";
     repository.rel = "noopener noreferrer";
     platform.append(repository, renderDemoLauncher(topic.id));
 
-    const top = element("div", "cbd-top");
-    top.append(overview, platform);
-
     const calculation = element("section", "cbd-calculation");
-    calculation.append(element("h4", "jig-stock-section-title", "How CBD Works"));
-    const material = element("div", "cbd-branch cbd-branch--material");
-    material.append(element("strong", "cbd-branch-title", "Material"), element("span", "cbd-branch-source", "BOM"), element("span", "cbd-branch-detail", "Usage × Price × (1 + Loss)"), element("b", "cbd-branch-result", "MAT"));
-    const processing = element("div", "cbd-branch cbd-branch--processing");
-    processing.append(element("strong", "cbd-branch-title", "Processing"), element("span", "cbd-branch-source", "Routing + Work Center"), element("span", "cbd-branch-detail", "Routing Factor = Manning ÷ (Capacity × Yield)"), element("span", "cbd-branch-detail", "Labor = Routing Factor × Work Center Labor Rate"), element("span", "cbd-branch-detail", "Burden = Routing Factor × Work Center Burden Rate"), element("b", "cbd-branch-result", "LB + BD"));
+    calculation.append(element("h4", "jig-stock-section-title", "How Cost Is Calculated"));
+
+    const material = element("section", "cbd-branch cbd-branch--material");
+    material.append(element("h5", "cbd-branch-title", "Material"));
+    material.append(element("span", "cbd-branch-source", "BOM"));
+    ["Usage", "Price", "Loss"].forEach(function (input) { material.append(element("span", "cbd-calc-input", input)); });
+    material.append(element("span", "cbd-branch-detail", "Material Cost = Usage × Price × (1 + Loss)"));
+    material.append(element("span", "cbd-branch-detail", "Direct Material = sum of calculable BOM rows"));
+    material.append(element("b", "cbd-branch-result", "MAT / Direct Material"));
+
+    const processing = element("section", "cbd-branch cbd-branch--processing");
+    processing.append(element("h5", "cbd-branch-title", "Processing"));
+    const ownership = element("div", "cbd-ownership");
+    const routingOwned = element("div", "cbd-owned-inputs");
+    routingOwned.append(element("strong", "cbd-owner-title", "Routing owns"), element("span", "cbd-owner-fields", "Process · WC assignment · Manning · Capacity · Yield"));
+    const wcOwned = element("div", "cbd-owned-inputs");
+    wcOwned.append(element("strong", "cbd-owner-title", "Work Center owns"), element("span", "cbd-owner-fields", "Labor Rate · Burden Rate"));
+    ownership.append(routingOwned, wcOwned);
+    processing.append(ownership);
+    const routingFactor = element("div", "cbd-factor");
+    routingFactor.append(element("span", "cbd-calc-input", "Manning · Capacity · Yield"), element("strong", "cbd-branch-result", "Routing Factor = Manning ÷ (Capacity × Yield)"));
+    const laborBurden = element("div", "cbd-labor-burden");
+    const labor = element("div", "cbd-cost-component");
+    labor.append(element("strong", "cbd-component-title", "Labor"), element("span", "cbd-branch-detail", "Routing Factor × Work Center Labor Rate"));
+    const burden = element("div", "cbd-cost-component");
+    burden.append(element("strong", "cbd-component-title", "Burden"), element("span", "cbd-branch-detail", "Routing Factor × Work Center Burden Rate"));
+    laborBurden.append(labor, burden);
+    processing.append(routingFactor, laborBurden, element("p", "cbd-conversion-note", "Conversion = Labor + Burden"));
+
     const branches = element("div", "cbd-branches");
     branches.append(material, processing);
     const total = element("div", "cbd-cost-total");
-    total.append(element("strong", "cbd-cost-total-title", "Standard Cost"), element("span", "cbd-cost-total-formula", "MAT + LB + BD"), element("small", "cbd-conversion-note", "Conversion = Labor + Burden"));
-    const gap = element("div", "cbd-gap-flow");
-    gap.append(element("span", "cbd-gap-step", "Current"), element("span", "cbd-gap-operator", "−"), element("span", "cbd-gap-step", "Reference"), element("span", "cbd-gap-operator", "="), element("strong", "cbd-gap-result", "GAP"));
-    calculation.append(branches, total, gap);
+    total.append(element("span", "cbd-standard-components", "Direct Material + Labor + Burden"), element("strong", "cbd-cost-total-title", "Standard Cost"), element("span", "cbd-cost-total-formula", "= Direct Material + Conversion"), element("small", "cbd-conversion-note", "Per piece · Conversion = Labor + Burden"));
+    calculation.append(branches, total, element("p", "cbd-missing-note", "Missing or invalid required input = unavailable, not zero. Explicit numeric zero is valid; ADDED / REMOVED use zero only on the absent side."));
 
     const analysis = element("section", "cbd-analysis");
-    analysis.append(element("h4", "jig-stock-section-title", "Find & Analyze"));
+    analysis.append(element("h4", "jig-stock-section-title", "Comparison Logic"));
     const compareFlow = element("ol", "cbd-compare-flow");
-    ["Reference + Current", "Match by business identity", "Compare", "UNCHANGED · CHANGED · ADDED · REMOVED"].forEach(function (step) { compareFlow.append(element("li", "cbd-compare-step", step)); });
-    const identities = element("p", "cbd-identities", "BOM → Name　 ·　 Work Center → WC　 ·　 Routing → Process");
-    const analysisTail = element("p", "cbd-analysis-tail", "Investigate a cost change, rank its candidate, then select one candidate for RCA.");
-    analysis.append(compareFlow, identities, analysisTail);
-
-    const simulation = element("section", "cbd-simulation");
-    simulation.append(element("h4", "jig-stock-section-title", "Simulation"));
-    const simFlow = element("div", "cbd-sim-flow");
-    simFlow.append(element("span", "cbd-sim-source", "RCA context"), element("span", "cbd-sim-arrow", "→"));
-    ["Scenario A", "Scenario B"].forEach(function (scenarioName) {
-      const scenario = element("div", "cbd-scenario");
-      scenario.append(element("strong", "cbd-scenario-title", scenarioName), element("span", "cbd-scenario-caption", "Alternative improvement plan"));
-      simFlow.append(scenario);
+    const compareSides = element("div", "cbd-compare-side");
+    ["Reference", "Current"].forEach(function (side) {
+      const snapshot = element("div", "cbd-compare-snapshot");
+      snapshot.append(element("strong", "cbd-compare-snapshot-title", side), element("span", "cbd-compare-snapshot-action", "Calculate independently"));
+      compareSides.append(snapshot);
     });
-    simFlow.append(element("span", "cbd-sim-arrow", "→"), element("strong", "cbd-sim-result", "Compare outcomes"));
-    simulation.append(simFlow);
+    ["Match by business identity", "Compare", "UNCHANGED · CHANGED · ADDED · REMOVED", "Gap = Current − Reference"].forEach(function (step) { compareFlow.append(element("li", "cbd-compare-step", step)); });
+    const identities = element("p", "cbd-identities", "BOM → Name　 ·　 Work Center → WC　 ·　 Routing → Process");
+    const reconciliation = element("p", "cbd-reconciliation", "Material Gap + Labor Gap + Burden Gap = Standard Cost Gap　 ·　 Labor Gap + Burden Gap = Conversion Gap");
+    analysis.append(compareSides, compareFlow, identities, reconciliation);
 
     const finalResult = element("section", "cbd-final-result");
     finalResult.append(element("h4", "jig-stock-section-title", "Final Result"));
-    finalResult.append(element("p", "cbd-final-flow", "Reference → Current → Simulated"), element("p", "cbd-final-gap", "Gap 1: Current − Reference　 ·　 Gap 2: Simulated − Current"));
-
-    const result = element("section", "cbd-result");
-    result.append(element("h4", "jig-stock-section-title", "Result / Outcome"), element("p", "cbd-result-text", "See what changed in cost, identify its drivers, and compare two improvement scenarios before reviewing the simulated result."));
-    container.append(purpose, top, calculation, analysis, simulation, finalResult, result);
+    const finalFlow = element("div", "cbd-final-flow");
+    finalFlow.append(element("span", "cbd-final-state", "Reference"), element("span", "cbd-final-arrow", "→"), element("span", "cbd-final-state", "Current"), element("span", "cbd-final-arrow", "→"), element("span", "cbd-final-state", "Simulated"));
+    finalResult.append(finalFlow, element("p", "cbd-final-gap", "Gap 1 = Current − Reference　 ·　 Gap 2 = Simulated − Current"), element("p", "cbd-selected-scenario", "The selected Scenario A or B becomes Simulated."));
+    container.append(purpose, overview, platform, calculation, analysis, finalResult);
   }
 
   function renderFoundation(topic, container) {
@@ -425,6 +424,9 @@
     const peelTitle = element("h4", "doe-case-title", peel.title);
     peelTitle.id = "doe-title-peel";
     peelCase.append(peelTitle, element("p", "subtopic-weeks", formatWeeks(peel.weeks)), element("p", "doe-description", peel.description));
+    const meeting = element("section", "doe-meeting");
+    meeting.append(element("h5", "doe-activity-label", peel.meeting.title), element("p", "doe-meeting-description", peel.meeting.description));
+    peelCase.append(meeting);
 
     const activities = element("div", "doe-peel-activities");
     peel.images.slice(0, 3).forEach(function (image, index) {
@@ -440,7 +442,6 @@
     peelCase.append(process, element("h5", "doe-results-label", "Representative Result"));
     const peelResult = element("div", "doe-peel-result");
     peelResult.append(renderDoeImage(peel.images[3], "doe-peel-result-image"));
-    peelResult.append(element("p", "doe-detail-note", peel.details[0]));
     peelCase.append(peelResult);
     container.append(peelCase);
   }
