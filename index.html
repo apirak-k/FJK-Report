@@ -18,12 +18,10 @@
         <div class="intro-heading">
           <img class="brand-logo" src="fujikura-logo.png" alt="Fujikura logo">
           <h1 id="intro-title">Internship<br><span>at Fujikura</span></h1>
+          <a class="intro-swot-link" href="#reflection">Personal SWOT <span aria-hidden="true">↓</span></a>
         </div>
 
         <aside class="overview-panel" aria-label="Internship information">
-          <div class="overview-panel__top">
-            <span class="week-stamp">17 <span>WEEKS</span></span>
-          </div>
           <p class="overview-summary" id="overview-summary"></p>
           <dl class="student-facts" id="student-facts"></dl>
         </aside>
@@ -39,7 +37,7 @@
 
           <div class="gantt-scroll" role="region" aria-label="17-week Gantt chart. Scroll horizontally if needed.">
             <table class="gantt-table">
-              <caption class="visually-hidden">Topic activity across 17 week labels. Week headings are labels only. Topic names link to their sections, and activity markers link to their topic details.</caption>
+              <caption class="visually-hidden">Topic activity across Weeks 1 to 17. Topic names and activity markers link to Topic sections. Week headings are labels.</caption>
               <colgroup id="gantt-columns"></colgroup>
               <thead><tr id="gantt-week-head"></tr></thead>
               <tbody id="gantt-rows"></tbody>
@@ -55,40 +53,40 @@
         <!-- Keep each topic body independent so its eventual layout can differ. -->
         <div class="topic-sections">
           <section class="topic-section" id="topic-foundation" aria-labelledby="topic-title-foundation" tabindex="-1">
-            <div class="topic-section__header"><div><p class="topic-index">TOPIC 01</p><h3 class="topic-title" id="topic-title-foundation">Foundation</h3></div></div>
-            <div id="detail-foundation" tabindex="-1"></div>
+            <div class="topic-section__header"><div><h3 class="topic-title" id="topic-title-foundation">Foundation</h3></div></div>
+            <div class="subtopic-list" id="subtopics-foundation"></div>
           </section>
           <section class="topic-section" id="topic-manufacturing" aria-labelledby="topic-title-manufacturing" tabindex="-1">
-            <div class="topic-section__header"><div><p class="topic-index">TOPIC 02</p><h3 class="topic-title" id="topic-title-manufacturing">Manufacturing</h3></div></div>
-            <div id="detail-manufacturing" tabindex="-1"></div>
+            <div class="topic-section__header"><div><h3 class="topic-title" id="topic-title-manufacturing">Manufacturing</h3></div></div>
+            <div class="subtopic-list" id="subtopics-manufacturing"></div>
           </section>
           <section class="topic-section" id="topic-msa" aria-labelledby="topic-title-msa" tabindex="-1">
-            <div class="topic-section__header"><div><p class="topic-index">TOPIC 03</p><h3 class="topic-title" id="topic-title-msa">MSA</h3></div></div>
-            <div id="detail-msa" tabindex="-1"></div>
+            <div class="topic-section__header"><div><h3 class="topic-title" id="topic-title-msa">MSA</h3></div></div>
+            <div class="subtopic-list" id="subtopics-msa"></div>
           </section>
           <section class="topic-section" id="topic-doe" aria-labelledby="topic-title-doe" tabindex="-1">
-            <div class="topic-section__header"><div><p class="topic-index">TOPIC 04</p><h3 class="topic-title" id="topic-title-doe">DOE</h3></div></div>
-            <div id="detail-doe" tabindex="-1"></div>
+            <div class="topic-section__header"><div><h3 class="topic-title" id="topic-title-doe">DOE</h3></div></div>
+            <div class="subtopic-list" id="subtopics-doe"></div>
           </section>
           <section class="topic-section" id="topic-jig-stock" aria-labelledby="topic-title-jig-stock" tabindex="-1">
-            <div class="topic-section__header"><div><p class="topic-index">TOPIC 05</p><h3 class="topic-title" id="topic-title-jig-stock">JIG STOCK</h3></div></div>
-            <div id="detail-jig-stock" tabindex="-1"></div>
+            <div class="topic-section__header"><div><h3 class="topic-title" id="topic-title-jig-stock">JIG STOCK</h3></div></div>
+            <div class="subtopic-list" id="subtopics-jig-stock"></div>
           </section>
           <section class="topic-section" id="topic-cost-breakdown" aria-labelledby="topic-title-cost-breakdown" tabindex="-1">
-            <div class="topic-section__header"><div><p class="topic-index">TOPIC 06</p><h3 class="topic-title" id="topic-title-cost-breakdown">Cost Breakdown</h3></div></div>
-            <div id="detail-cost-breakdown" tabindex="-1"></div>
+            <div class="topic-section__header"><div><h3 class="topic-title" id="topic-title-cost-breakdown">Cost Breakdown</h3></div></div>
+            <div class="subtopic-list" id="subtopics-cost-breakdown"></div>
           </section>
           <section class="topic-section" id="topic-ai-swe-fundamentals" aria-labelledby="topic-title-ai-swe-fundamentals" tabindex="-1">
-            <div class="topic-section__header"><div><p class="topic-index">TOPIC 07</p><h3 class="topic-title" id="topic-title-ai-swe-fundamentals">AI &amp; SWE Fundamentals</h3></div></div>
-            <div id="detail-ai-swe-fundamentals" tabindex="-1"></div>
+            <div class="topic-section__header"><div><h3 class="topic-title" id="topic-title-ai-swe-fundamentals">AI &amp; SWE Fundamentals</h3></div></div>
+            <div class="subtopic-list" id="subtopics-ai-swe-fundamentals"></div>
           </section>
           <section class="topic-section" id="topic-machine-setup" aria-labelledby="topic-title-machine-setup" tabindex="-1">
-            <div class="topic-section__header"><div><p class="topic-index">TOPIC 08</p><h3 class="topic-title" id="topic-title-machine-setup">Machine Setup</h3></div></div>
-            <div id="detail-machine-setup" tabindex="-1"></div>
+            <div class="topic-section__header"><div><h3 class="topic-title" id="topic-title-machine-setup">Machine Setup</h3></div></div>
+            <div class="subtopic-list" id="subtopics-machine-setup"></div>
           </section>
           <section class="topic-section" id="topic-workshop" aria-labelledby="topic-title-workshop" tabindex="-1">
-            <div class="topic-section__header"><div><p class="topic-index">TOPIC 09</p><h3 class="topic-title" id="topic-title-workshop">Workshop</h3></div></div>
-            <div id="detail-workshop" tabindex="-1"></div>
+            <div class="topic-section__header"><div><h3 class="topic-title" id="topic-title-workshop">Workshop</h3></div></div>
+            <div class="subtopic-list" id="subtopics-workshop"></div>
           </section>
         </div>
       </section>

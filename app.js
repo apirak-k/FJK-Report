@@ -18,6 +18,45 @@
     });
   }
 
+  function formatWeeks(weeks) {
+    const ranges = [];
+    weeks.slice().sort(function (a, b) { return a - b; }).forEach(function (week) {
+      const lastRange = ranges[ranges.length - 1];
+      if (lastRange && week === lastRange[1] + 1) lastRange[1] = week;
+      else ranges.push([week, week]);
+    });
+    return ranges.map(function (range) {
+      return range[0] === range[1] ? "W" + range[0] : "W" + range[0] + "–W" + range[1];
+    }).join(" · ");
+  }
+
+  function renderTopics() {
+    data.topics.forEach(function (topic) {
+      const container = document.getElementById("subtopics-" + topic.id);
+      if (topic.showActiveWeeks) {
+        const header = document.querySelector("#topic-" + topic.id + " .topic-section__header");
+        header.append(element("p", "topic-weeks", formatWeeks(topic.activeWeeks)));
+      }
+      topic.subtopics.forEach(function (subtopic) {
+        const section = element("article", "subtopic-section");
+        section.id = "subtopic-" + subtopic.id;
+        section.tabIndex = -1;
+        const titleId = "subtopic-title-" + subtopic.id;
+        section.setAttribute("aria-labelledby", titleId);
+        const title = element("h4", "subtopic-title", subtopic.title);
+        title.id = titleId;
+        section.append(title);
+        if (subtopic.weeks.length) section.append(element("p", "subtopic-weeks", formatWeeks(subtopic.weeks)));
+        if (subtopic.details && subtopic.details.length) {
+          const details = element("ul", "subtopic-details");
+          subtopic.details.forEach(function (detail) { details.append(element("li", "", detail)); });
+          section.append(details);
+        }
+        container.append(section);
+      });
+    });
+  }
+
   function renderTimeline() {
     const columns = document.getElementById("gantt-columns");
     columns.append(element("col", "gantt-topic-column"));
@@ -47,19 +86,13 @@
 
       data.weeks.forEach(function (week) {
         const cell = element("td", "gantt-cell");
-        const activities = data.timeline.activities.filter(function (activity) {
-          return activity.topicId === topic.id && activity.week === week;
-        });
-        if (activities.length) {
+        if (topic.activeWeeks.includes(week)) {
           const markers = element("div", "activity-markers");
-          activities.forEach(function (activity, activityIndex) {
-            const marker = element("a", "activity-marker");
-            marker.href = "#" + activity.targetId;
-            marker.setAttribute("aria-label", "Go to " + topic.title + " activity " + (activityIndex + 1) + ", Week " + week);
-            marker.title = topic.title + " activity · Week " + week;
-            marker.append(element("span", "visually-hidden", "Activity " + (activityIndex + 1)));
-            markers.append(marker);
-          });
+          const marker = element("a", "activity-marker");
+          marker.href = "#topic-" + topic.id;
+          marker.setAttribute("aria-label", "Go to " + topic.title + ", Week " + week);
+          marker.title = topic.title + " · Week " + week;
+          markers.append(marker);
           cell.append(markers);
         } else {
           cell.setAttribute("aria-hidden", "true");
@@ -75,6 +108,9 @@
     data.swot.forEach(function (item) {
       const card = element("article", "swot-card swot-card--" + item.id);
       card.append(element("h3", "swot-title", item.title));
+      const points = element("ul", "swot-points");
+      item.points.forEach(function (point) { points.append(element("li", "", point)); });
+      card.append(points);
       grid.append(card);
     });
   }
@@ -89,6 +125,7 @@
   }
 
   renderOverview();
+  renderTopics();
   renderTimeline();
   renderSwot();
   initBackToTop();
