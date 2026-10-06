@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#17333b">
+    <meta name="description" content="A static, interactive internship presentation shell.">
+    <title>Internship Presentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="data.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to presentation</a>
+
+    <header class="site-header">
+      <div class="site-header__inner page-width">
+        <a class="wordmark" href="#overview" aria-label="Internship presentation home">
+          <span class="wordmark__mark" aria-hidden="true">I</span>
+          <span>Internship <span class="wordmark__slash">/</span> presentation</span>
+        </a>
+        <nav class="main-nav" aria-label="Presentation sections">
+          <a href="#overview">Overview</a>
+          <a href="#timeline">17-week timeline</a>
+          <a href="#topics">Topics</a>
+          <a href="#reflection">Personal SWOT</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="intro-section page-width" id="overview" aria-labelledby="intro-title">
+        <div class="intro-heading">
+          <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span> University internship presentation</p>
+          <h1 id="intro-title">Internship<br><span>presentation</span></h1>
+          <p class="intro-lede">A structured overview of the internship, the work explored, and the lessons learned.</p>
+          <a class="primary-link" href="#timeline">Explore the timeline <span aria-hidden="true">↓</span></a>
+        </div>
+
+        <aside class="overview-panel" aria-label="Internship information">
+          <div class="overview-panel__top">
+            <p class="eyebrow">Introduction + overview</p>
+            <span class="week-stamp">17 <span>WEEKS</span></span>
+          </div>
+          <p class="overview-summary" id="overview-summary"></p>
+          <dl class="student-facts" id="student-facts"></dl>
+        </aside>
+        <div class="intro-index" aria-hidden="true"><span>01</span><span>04</span></div>
+      </section>
+
+      <section class="timeline-section section-band" id="timeline" aria-labelledby="timeline-title">
+        <div class="page-width">
+          <div class="section-heading section-heading--wide">
+            <div>
+              <p class="section-kicker"><span>02 / 04</span><span>Main navigation hub</span></p>
+              <h2 id="timeline-title">Internship timeline</h2>
+              <p class="section-lede">Select a week for its overview, a marker for activity context, or a topic name to jump to its details.</p>
+            </div>
+            <div class="timeline-key" aria-label="Timeline legend">
+              <span class="timeline-key__dot" aria-hidden="true"></span>
+              <span>Layout preview marker</span>
+            </div>
+          </div>
+
+          <p class="preview-note" id="preview-note"></p>
+          <div class="gantt-scroll" role="region" aria-label="Interactive 17-week Gantt chart. Scroll horizontally if needed." tabindex="0">
+            <table class="gantt-table">
+              <caption class="visually-hidden">Topic activity placeholders across the 17-week internship period. Week headings open week details; markers open contextual activity details; topic names open topic sections.</caption>
+              <colgroup id="gantt-columns"></colgroup>
+              <thead><tr id="gantt-week-head"></tr></thead>
+              <tbody id="gantt-rows"></tbody>
+            </table>
+          </div>
+          <p class="gantt-hint"><span aria-hidden="true">↳</span> Click any week heading or marker to reveal more detail.</p>
+        </div>
+      </section>
+
+      <section class="topics-section page-width" id="topics" aria-labelledby="topics-title">
+        <div class="section-heading">
+          <p class="section-kicker"><span>03 / 04</span><span>Detailed sections</span></p>
+          <h2 id="topics-title">Topic details</h2>
+          <p class="section-lede">Each section is a flexible placeholder for the overview, activities, visuals, and evidence you want to present.</p>
+        </div>
+        <div class="topic-sections" id="topic-sections"></div>
+      </section>
+
+      <section class="swot-section section-band" id="reflection" aria-labelledby="swot-title">
+        <div class="page-width">
+          <div class="section-heading">
+            <p class="section-kicker"><span>04 / 04</span><span>Personal reflection</span></p>
+            <h2 id="swot-title">Personal SWOT analysis</h2>
+            <p class="section-lede">A reflection on my internship experience: strengths, areas to improve, opportunities gained, and challenges encountered.</p>
+          </div>
+          <div class="swot-grid" id="swot-grid"></div>
+          <a class="back-link" href="#timeline"><span aria-hidden="true">↑</span> Back to the timeline</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="page-width site-footer__inner">
+        <span>Internship presentation</span>
+        <a href="#overview">Return to introduction ↑</a>
+      </div>
+    </footer>
+
+    <dialog class="detail-dialog" id="detail-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-intro">
+      <div class="detail-dialog__header">
+        <div>
+          <p class="section-kicker">Presentation detail</p>
+          <h2 id="dialog-title">Details</h2>
+        </div>
+        <button class="dialog-close" id="dialog-close" type="button" aria-label="Close details">×</button>
+      </div>
+      <p class="dialog-intro" id="dialog-intro"></p>
+      <div class="dialog-content" id="dialog-content"></div>
+    </dialog>
+  </body>
+</html>
