@@ -72,7 +72,7 @@ window.presentationData = {
         checks: "Permission · approved status · required date · available stock",
         blocked: "Checks fail → Show an error; leave data unchanged",
         passed: "Checks pass → Deduct stock; record the Issue transaction and audit",
-        persistence: "Save the updated prototype state in browser storage"
+        persistence: ""
       },
       issueNote: "Stock is deducted at Issue. Approval and receipt confirmation do not deduct it again.",
       screenshot: "assets/jig-stock/jigstock-dashboard.png",
@@ -99,50 +99,9 @@ window.presentationData = {
         { id: "ai-workflow-framework", title: "AI Workflow & Framework", weeks: [9], description: "Learned how to organize AI-assisted work into a structured workflow.", steps: ["Task", "AI Assistance", "Review", "Improve"] },
         {
           id: "haws", title: "HAWS — Human-AI Working Standard", weeks: [11, 13],
-          purpose: "Give people and AI tools a consistent way to work together on software development.",
-          problem: [
-            "AI tools can receive different instructions and project context.",
-            "Different workflows can produce inconsistent results.",
-            "Work may be called complete without enough evidence."
-          ],
-          useCase: "A developer can use Codex, Claude, or another AI coding tool. HAWS applies one shared standard across them.",
-          image: { id: "ai-swe-haws-ui", title: "HAWS terminal interface", image: "assets/ai-swe/ai-swe-haws-ui.png", imageAlt: "HAWS terminal and text user interface" },
-          architecture: {
-            source: "HAWS",
-            action: "Setup / Configure",
-            environments: ["Codex", "Claude", "Other AI"],
-            note: "HAWS configures the tools before use; people then prompt them directly."
-          },
-          capabilities: [
-            { title: "Rules", description: "Shared working instructions and safety boundaries" },
-            { title: "Context", description: "Project context and Second Brain" },
-            { title: "Skills", description: "Reusable capabilities for specific tasks" },
-            { title: "Specialized Agents", description: "Frontend · Backend · Tester · Researcher · Organizer" },
-            { title: "Verification", description: "Test · Build · Lint · Evidence" }
-          ],
-          management: ["Setup", "Sync", "Settings", "Doctor", "Uninstall"],
-          taskSteps: ["Human gives task", "Understand the goal", "Read rules + context", "Analyze the task"],
-          capabilityDecision: {
-            question: "Is a skill or specialized agent needed?",
-            yes: "Use a skill or agent",
-            no: "Continue with available methods",
-            continuation: "Both paths continue to Execute"
-          },
-          verificationSteps: ["Verify", "Test · Build · Lint · Evidence"],
-          verificationDecision: {
-            question: "Does verification pass?",
-            yes: "Verified result",
-            no: "Diagnose and fix",
-            retry: "Verify again"
-          },
-          setupSteps: ["HAWS Setup", "Select Configuration", "Preview", "Apply", "Sync", "Detect AI Environments", "Configure Rules / Context / Skills / Agents", "Verify Configuration", "Ready"],
-          results: [
-            { title: "Consistent", description: "AI tools follow a common standard" },
-            { title: "Controlled", description: "Rules and boundaries are defined" },
-            { title: "Reusable", description: "Skills, agents, and context are shared" },
-            { title: "Verifiable", description: "Results have verification evidence" }
-          ],
-          outcome: "Structured AI-Assisted Development",
+          purpose: "Help people and AI work together in a more consistent and reliable way.",
+          image: { id: "ai-swe-haws-ui", title: "HAWS interface", image: "assets/ai-swe/ai-swe-haws-ui.png", imageAlt: "HAWS user interface" },
+          flowSteps: ["Human Goal", "Rules & Context", "AI Work", "Verify", "Improve"],
           repository: "https://github.com/apirak-k/Human-AI-Working-Standard"
         }
       ]

@@ -53,6 +53,10 @@
         renderJigStock(topic, container);
         return;
       }
+      if (topic.id === "cost-breakdown") {
+        renderCostBreakdown(topic, container);
+        return;
+      }
       if (topic.id === "foundation") {
         renderFoundation(topic, container);
         return;
@@ -208,8 +212,7 @@
       element("p", "jig-stock-logic-blocked", topic.issueLogic.blocked),
       element("p", "jig-stock-logic-passed", topic.issueLogic.passed)
     );
-    const persistence = element("div", "jig-stock-logic-step jig-stock-logic-step--save", topic.issueLogic.persistence);
-    logicFlow.append(action, checks, outcomes, persistence);
+    logicFlow.append(action, checks, outcomes);
     logic.append(logicFlow, element("p", "jig-stock-issue-note", topic.issueNote));
 
     const result = element("section", "jig-stock-result");
@@ -218,6 +221,90 @@
     topic.results.forEach(function (item) { resultList.append(element("li", "jig-stock-result-item", item)); });
     result.append(resultList);
     container.append(purpose, top, logic, result);
+  }
+
+  function renderCostBreakdown(topic, container) {
+    const purpose = element("section", "cbd-purpose");
+    purpose.append(element("h4", "jig-stock-section-title", "Purpose"), element("p", "jig-stock-purpose-text", "Find what changed in product cost, understand why, and evaluate improvement options."));
+
+    const overview = element("section", "cbd-overview");
+    overview.append(element("h4", "jig-stock-section-title", "System Overview"));
+    const snapshots = element("div", "cbd-snapshots");
+    ["Reference", "Current"].forEach(function (snapshotName) {
+      const snapshot = element("div", "cbd-snapshot");
+      snapshot.append(element("strong", "cbd-snapshot-title", snapshotName));
+      const inputs = element("div", "cbd-snapshot-inputs");
+      ["BOM", "Work Center", "Routing"].forEach(function (input) { inputs.append(element("span", "cbd-input", input)); });
+      snapshot.append(inputs);
+      snapshots.append(snapshot);
+    });
+    const overviewFlow = element("ol", "cbd-overview-flow");
+    ["Cost Breakdown", "Find cost changes", "Ranking / Candidate", "RCA", "Simulation A / B", "Result"].forEach(function (step) {
+      overviewFlow.append(element("li", "cbd-overview-step", step));
+    });
+    overview.append(snapshots, overviewFlow, element("p", "cbd-transition", "Reference → Current → Simulated"));
+
+    const platform = element("section", "cbd-platform");
+    platform.append(element("h4", "jig-stock-section-title", "Platform / UI"));
+    const screenshotPath = topic.screenshot;
+    if (screenshotPath) {
+      const figure = renderFoundationImage({ id: "cost-breakdown-platform", title: "Cost Breakdown workspace", image: screenshotPath, imageAlt: "Cost Breakdown comparison workspace" });
+      figure.classList.add("cbd-screenshot");
+      platform.append(figure);
+    } else {
+      platform.append(element("div", "cbd-screenshot-placeholder", "Add a confirmed CBD comparison workspace screenshot here."));
+    }
+    if (screenshotPath) platform.append(element("p", "jig-stock-screenshot-description", "Compare Reference and Current cost components and inspect the resulting gap."));
+    const repository = element("a", "topic-repository-link", "View Repository ↗");
+    repository.href = topic.repository;
+    repository.target = "_blank";
+    repository.rel = "noopener noreferrer";
+    platform.append(repository, renderDemoLauncher(topic.id));
+
+    const top = element("div", "cbd-top");
+    top.append(overview, platform);
+
+    const calculation = element("section", "cbd-calculation");
+    calculation.append(element("h4", "jig-stock-section-title", "How CBD Works"));
+    const material = element("div", "cbd-branch cbd-branch--material");
+    material.append(element("strong", "cbd-branch-title", "Material"), element("span", "cbd-branch-source", "BOM"), element("span", "cbd-branch-detail", "Usage × Price × (1 + Loss)"), element("b", "cbd-branch-result", "MAT"));
+    const processing = element("div", "cbd-branch cbd-branch--processing");
+    processing.append(element("strong", "cbd-branch-title", "Processing"), element("span", "cbd-branch-source", "Routing + Work Center"), element("span", "cbd-branch-detail", "Routing Factor = Manning ÷ (Capacity × Yield)"), element("span", "cbd-branch-detail", "Labor = Routing Factor × Work Center Labor Rate"), element("span", "cbd-branch-detail", "Burden = Routing Factor × Work Center Burden Rate"), element("b", "cbd-branch-result", "LB + BD"));
+    const branches = element("div", "cbd-branches");
+    branches.append(material, processing);
+    const total = element("div", "cbd-cost-total");
+    total.append(element("strong", "cbd-cost-total-title", "Standard Cost"), element("span", "cbd-cost-total-formula", "MAT + LB + BD"), element("small", "cbd-conversion-note", "Conversion = Labor + Burden"));
+    const gap = element("div", "cbd-gap-flow");
+    gap.append(element("span", "cbd-gap-step", "Current"), element("span", "cbd-gap-operator", "−"), element("span", "cbd-gap-step", "Reference"), element("span", "cbd-gap-operator", "="), element("strong", "cbd-gap-result", "GAP"));
+    calculation.append(branches, total, gap);
+
+    const analysis = element("section", "cbd-analysis");
+    analysis.append(element("h4", "jig-stock-section-title", "Find & Analyze"));
+    const compareFlow = element("ol", "cbd-compare-flow");
+    ["Reference + Current", "Match by business identity", "Compare", "UNCHANGED · CHANGED · ADDED · REMOVED"].forEach(function (step) { compareFlow.append(element("li", "cbd-compare-step", step)); });
+    const identities = element("p", "cbd-identities", "BOM → Name　 ·　 Work Center → WC　 ·　 Routing → Process");
+    const analysisTail = element("p", "cbd-analysis-tail", "Investigate a cost change, rank its candidate, then select one candidate for RCA.");
+    analysis.append(compareFlow, identities, analysisTail);
+
+    const simulation = element("section", "cbd-simulation");
+    simulation.append(element("h4", "jig-stock-section-title", "Simulation"));
+    const simFlow = element("div", "cbd-sim-flow");
+    simFlow.append(element("span", "cbd-sim-source", "RCA context"), element("span", "cbd-sim-arrow", "→"));
+    ["Scenario A", "Scenario B"].forEach(function (scenarioName) {
+      const scenario = element("div", "cbd-scenario");
+      scenario.append(element("strong", "cbd-scenario-title", scenarioName), element("span", "cbd-scenario-caption", "Alternative improvement plan"));
+      simFlow.append(scenario);
+    });
+    simFlow.append(element("span", "cbd-sim-arrow", "→"), element("strong", "cbd-sim-result", "Compare outcomes"));
+    simulation.append(simFlow);
+
+    const finalResult = element("section", "cbd-final-result");
+    finalResult.append(element("h4", "jig-stock-section-title", "Final Result"));
+    finalResult.append(element("p", "cbd-final-flow", "Reference → Current → Simulated"), element("p", "cbd-final-gap", "Gap 1: Current − Reference　 ·　 Gap 2: Simulated − Current"));
+
+    const result = element("section", "cbd-result");
+    result.append(element("h4", "jig-stock-section-title", "Result / Outcome"), element("p", "cbd-result-text", "See what changed in cost, identify its drivers, and compare two improvement scenarios before reviewing the simulated result."));
+    container.append(purpose, top, calculation, analysis, simulation, finalResult, result);
   }
 
   function renderFoundation(topic, container) {
@@ -412,106 +499,21 @@
 
   function renderHaws(haws) {
     const section = renderAiSweSubtopic(haws, "ai-swe-haws");
-
-    const intro = element("div", "haws-intro-grid");
-    const overview = element("div", "haws-overview");
     const purpose = element("section", "haws-purpose");
     purpose.append(element("h5", "haws-panel-title", "Purpose"), element("p", "haws-purpose-copy", haws.purpose));
-
-    const context = element("div", "haws-context-grid");
-    const problem = element("section", "haws-context-block");
-    problem.append(element("h5", "haws-panel-title", "Problem"));
-    const problemList = element("ul", "haws-problem-list");
-    haws.problem.forEach(function (item) { problemList.append(element("li", "", item)); });
-    problem.append(problemList);
-    const useCase = element("section", "haws-context-block");
-    useCase.append(element("h5", "haws-panel-title", "Use Case"), element("p", "haws-context-copy", haws.useCase));
-    context.append(problem, useCase);
-    overview.append(purpose, context);
-    intro.append(overview, renderAiSweImage(haws.image, "ai-swe-haws-image"));
-    section.append(intro);
-
-    const architecture = element("section", "haws-block");
-    architecture.append(element("h5", "haws-section-title", "How HAWS Works"));
-    const architectureFlow = element("div", "haws-architecture-flow");
-    architectureFlow.setAttribute("role", "group");
-    architectureFlow.setAttribute("aria-label", "HAWS configures AI environments before people use them directly");
-    architectureFlow.append(element("div", "haws-architecture-node haws-architecture-node--source", haws.architecture.source));
-    architectureFlow.append(element("span", "haws-architecture-arrow", "→"));
-    architectureFlow.append(element("div", "haws-architecture-node", haws.architecture.action));
-    architectureFlow.append(element("span", "haws-architecture-arrow", "→"));
-    const environments = element("div", "haws-environments");
-    haws.architecture.environments.forEach(function (environment) {
-      environments.append(element("div", "haws-architecture-node haws-architecture-node--environment", environment));
-    });
-    architectureFlow.append(environments);
-    architecture.append(architectureFlow, element("p", "haws-architecture-note", haws.architecture.note));
-    section.append(architecture);
-
-    const capabilities = element("section", "haws-block");
-    capabilities.append(element("h5", "haws-section-title", "What HAWS Provides"));
-    const capabilityGrid = element("div", "haws-capabilities");
-    haws.capabilities.forEach(function (capability) {
-      const item = element("article", "haws-capability");
-      item.append(element("h6", "haws-capability-title", capability.title), element("p", "haws-capability-copy", capability.description));
-      capabilityGrid.append(item);
-    });
-    const management = element("p", "haws-management");
-    management.append(element("span", "haws-management-label", "Management"), document.createTextNode(" · " + haws.management.join(" · ")));
-    capabilities.append(capabilityGrid, management);
-    section.append(capabilities);
-
-    const logic = element("section", "haws-block haws-working-logic");
-    logic.append(element("h5", "haws-section-title", "Working Logic"));
-    logic.append(renderHawsStepFlow(haws.taskSteps, "Task flow"));
-    logic.append(renderHawsDecision(haws.capabilityDecision, "capability"));
-    logic.append(element("p", "haws-flow-continues", "Both paths continue to Execute ↓"));
-    logic.append(renderHawsStepFlow(haws.verificationSteps, "Verification flow"));
-    logic.append(renderHawsDecision(haws.verificationDecision, "verification"));
-    section.append(logic);
-
-    const setup = element("section", "haws-block haws-setup");
-    setup.append(element("h5", "haws-section-title", "Setup / System Logic"), renderHawsStepFlow(haws.setupSteps, "HAWS setup flow"));
-    section.append(setup);
-
-    const result = element("section", "haws-block haws-result");
-    result.append(element("h5", "haws-section-title", "Result"));
-    const resultGrid = element("div", "haws-results-grid");
-    haws.results.forEach(function (item) {
-      const card = element("article", "haws-result-item");
-      card.append(element("h6", "haws-result-title", item.title), element("p", "haws-result-copy", item.description));
-      resultGrid.append(card);
-    });
-    result.append(resultGrid, element("p", "haws-outcome", haws.outcome));
+    const content = element("div", "haws-simple-content");
+    content.append(purpose, renderAiSweImage(haws.image, "ai-swe-haws-image"));
+    const flow = element("ol", "haws-step-flow haws-simple-flow");
+    flow.setAttribute("aria-label", "How HAWS supports AI assisted work");
+    haws.flowSteps.forEach(function (step) { flow.append(element("li", "haws-step", step)); });
+    const repoBlock = element("div", "haws-simple-repository");
     const repoLink = element("a", "foundation-external-link haws-repository-link", "View HAWS Repository ↗");
     repoLink.href = haws.repository;
     repoLink.target = "_blank";
     repoLink.rel = "noopener noreferrer";
-    result.append(repoLink);
-    section.append(result);
+    repoBlock.append(repoLink);
+    section.append(content, flow, repoBlock);
     return section;
-  }
-
-  function renderHawsStepFlow(steps, label) {
-    const flow = element("ol", "haws-step-flow");
-    if (label === "Task flow") flow.classList.add("haws-task-flow");
-    if (label === "Verification flow") flow.classList.add("haws-verification-flow");
-    flow.setAttribute("aria-label", label);
-    steps.forEach(function (step) { flow.append(element("li", "haws-step", step)); });
-    return flow;
-  }
-
-  function renderHawsDecision(decision, name) {
-    const block = element("section", "haws-decision haws-decision--" + name);
-    const title = element("h6", "haws-decision-question", decision.question);
-    const branches = element("div", "haws-decision-branches");
-    [["Yes", decision.yes], ["No", decision.no]].forEach(function (branch) {
-      const item = element("div", "haws-decision-branch");
-      item.append(element("strong", "haws-branch-label", branch[0]), element("span", "haws-branch-copy", branch[1]));
-      branches.append(item);
-    });
-    block.append(title, branches, element("p", "haws-decision-note", name === "capability" ? decision.continuation : "↶ " + decision.retry));
-    return block;
   }
 
   function renderAiSweSubtopic(subtopic, className) {
