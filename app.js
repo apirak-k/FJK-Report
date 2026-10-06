@@ -37,13 +37,21 @@
         const header = document.querySelector("#topic-" + topic.id + " .topic-section__header");
         header.append(element("p", "topic-weeks", formatWeeks(topic.activeWeeks)));
       }
-      if (topic.repository) {
+      if (topic.repository && topic.id !== "jig-stock") {
         const headerContent = document.querySelector("#topic-" + topic.id + " .topic-section__header > div");
         const repository = element("a", "topic-repository-link", "View Repository ↗");
         repository.href = topic.repository;
         repository.target = "_blank";
         repository.rel = "noopener noreferrer";
         headerContent.append(repository);
+      }
+      if (topic.id === "cost-breakdown") {
+        const headerContent = document.querySelector("#topic-" + topic.id + " .topic-section__header > div");
+        headerContent.append(renderDemoLauncher(topic.id));
+      }
+      if (topic.id === "jig-stock") {
+        renderJigStock(topic, container);
+        return;
       }
       if (topic.id === "foundation") {
         renderFoundation(topic, container);
@@ -91,6 +99,125 @@
         container.append(section);
       });
     });
+  }
+
+  function renderDemoLauncher(topicId) {
+    const storageKey = topicId === "jig-stock" ? "fjk-demo-jigstock" : "fjk-demo-costbreakdown";
+    const launcher = element("div", "topic-demo-launcher");
+    const inputId = "demo-url-" + topicId;
+    const errorId = inputId + "-error";
+    const label = element("label", "topic-demo-label", "Demo URL");
+    label.htmlFor = inputId;
+
+    const controls = element("div", "topic-demo-controls");
+    const input = element("input", "topic-demo-input");
+    input.type = "url";
+    input.id = inputId;
+    input.placeholder = "Paste local demo URL...";
+    input.autocomplete = "url";
+    input.setAttribute("aria-describedby", errorId);
+    const button = element("button", "topic-demo-button", "Open Demo ↗");
+    button.type = "button";
+    button.disabled = true;
+    const error = element("p", "topic-demo-error");
+    error.id = errorId;
+    error.setAttribute("role", "status");
+    error.setAttribute("aria-live", "polite");
+    error.hidden = true;
+
+    try {
+      input.value = window.localStorage.getItem(storageKey) || "";
+    } catch (errorReadingStorage) {
+      // Keep the launcher usable when browser storage is unavailable.
+    }
+    button.disabled = input.value.trim() === "";
+
+    input.addEventListener("input", function () {
+      const value = input.value;
+      button.disabled = value.trim() === "";
+      error.textContent = "";
+      error.hidden = true;
+      input.removeAttribute("aria-invalid");
+      try {
+        window.localStorage.setItem(storageKey, value);
+      } catch (errorWritingStorage) {
+        // The current input remains usable for this page view.
+      }
+    });
+    button.addEventListener("click", function () {
+      const value = input.value.trim();
+      let url;
+      try {
+        url = new URL(value);
+      } catch (invalidUrl) {
+        url = null;
+      }
+      if (!url || (url.protocol !== "http:" && url.protocol !== "https:") || !url.hostname) {
+        error.textContent = "Enter a valid http:// or https:// URL.";
+        error.hidden = false;
+        input.setAttribute("aria-invalid", "true");
+        return;
+      }
+      error.textContent = "";
+      error.hidden = true;
+      input.removeAttribute("aria-invalid");
+      window.open(url.href, "_blank", "noopener,noreferrer");
+    });
+
+    controls.append(input, button);
+    launcher.append(label, controls, error);
+    return launcher;
+  }
+
+  function renderJigStock(topic, container) {
+    const purpose = element("section", "jig-stock-purpose");
+    purpose.append(element("h4", "jig-stock-section-title", "Purpose"), element("p", "jig-stock-purpose-text", topic.purpose));
+
+    const top = element("div", "jig-stock-top");
+    const overview = element("section", "jig-stock-overview");
+    overview.append(element("h4", "jig-stock-section-title", "System Overview"));
+    const flow = element("ol", "jig-stock-overview-flow");
+    flow.setAttribute("aria-label", "JIGSTOCK material request flow");
+    topic.overviewSteps.forEach(function (step) { flow.append(element("li", "jig-stock-overview-step", step)); });
+    overview.append(flow, element("p", "jig-stock-supporting-areas", topic.supportingAreas));
+
+    const platform = element("section", "jig-stock-platform");
+    platform.append(element("h4", "jig-stock-section-title", "Platform / UI"));
+    const screenshot = renderFoundationImage({
+      id: "jigstock-dashboard",
+      title: "JIGSTOCK Dashboard",
+      image: topic.screenshot,
+      imageAlt: topic.screenshotAlt
+    });
+    screenshot.classList.add("jig-stock-screenshot");
+    platform.append(screenshot, element("p", "jig-stock-screenshot-description", topic.screenshotDescription));
+    const repository = element("a", "topic-repository-link", "View Repository ↗");
+    repository.href = topic.repository;
+    repository.target = "_blank";
+    repository.rel = "noopener noreferrer";
+    platform.append(repository, renderDemoLauncher(topic.id));
+    top.append(overview, platform);
+
+    const logic = element("section", "jig-stock-logic");
+    logic.append(element("h4", "jig-stock-section-title", "How JIGSTOCK Works"));
+    const logicFlow = element("div", "jig-stock-logic-flow");
+    const action = element("div", "jig-stock-logic-step", topic.issueLogic.action);
+    const checks = element("div", "jig-stock-logic-step", topic.issueLogic.checks);
+    const outcomes = element("div", "jig-stock-logic-outcomes");
+    outcomes.append(
+      element("p", "jig-stock-logic-blocked", topic.issueLogic.blocked),
+      element("p", "jig-stock-logic-passed", topic.issueLogic.passed)
+    );
+    const persistence = element("div", "jig-stock-logic-step jig-stock-logic-step--save", topic.issueLogic.persistence);
+    logicFlow.append(action, checks, outcomes, persistence);
+    logic.append(logicFlow, element("p", "jig-stock-issue-note", topic.issueNote));
+
+    const result = element("section", "jig-stock-result");
+    result.append(element("h4", "jig-stock-section-title", "Result"));
+    const resultList = element("ul", "jig-stock-result-list");
+    topic.results.forEach(function (item) { resultList.append(element("li", "jig-stock-result-item", item)); });
+    result.append(resultList);
+    container.append(purpose, top, logic, result);
   }
 
   function renderFoundation(topic, container) {
@@ -247,18 +374,19 @@
     const header = document.querySelector("#topic-ai-swe-fundamentals .topic-section__header > div");
     header.append(element("p", "ai-swe-expansion", topic.expansion));
     container.append(element("p", "ai-swe-intro", topic.intro));
+    const progression = element("div", "ai-swe-progression");
 
     const prompting = topic.subtopics.find(function (subtopic) { return subtopic.id === "prompting-ai-usage"; });
     const promptingSection = renderAiSweSubtopic(prompting, "ai-swe-prompting");
     promptingSection.append(element("p", "ai-swe-description", prompting.description));
-    container.append(promptingSection);
+    progression.append(promptingSection);
 
     const git = topic.subtopics.find(function (subtopic) { return subtopic.id === "git-version-control"; });
     const gitSection = renderAiSweSubtopic(git, "ai-swe-git");
     const gitImages = element("div", "ai-swe-git-images");
     git.images.forEach(function (image) { gitImages.append(renderAiSweImage(image, "ai-swe-git-image")); });
     gitSection.append(gitImages, element("p", "ai-swe-description", git.description));
-    container.append(gitSection);
+    progression.append(gitSection);
 
     const tools = topic.subtopics.find(function (subtopic) { return subtopic.id === "ai-tools"; });
     const toolsSection = renderAiSweSubtopic(tools, "ai-swe-tools");
@@ -270,27 +398,120 @@
       concepts.append(item);
     });
     toolsSection.append(concepts);
-    container.append(toolsSection);
+    progression.append(toolsSection);
 
     const workflow = topic.subtopics.find(function (subtopic) { return subtopic.id === "ai-workflow-framework"; });
     const workflowSection = renderAiSweSubtopic(workflow, "ai-swe-workflow");
     workflowSection.append(element("p", "ai-swe-description", workflow.description), renderAiSweFlow(workflow.steps));
-    container.append(workflowSection);
+    progression.append(workflowSection);
+    container.append(progression);
 
     const haws = topic.subtopics.find(function (subtopic) { return subtopic.id === "haws"; });
-    const hawsSection = renderAiSweSubtopic(haws, "ai-swe-haws");
-    const hawsTop = element("div", "ai-swe-haws-top");
-    hawsTop.append(renderAiSweImage(haws.image, "ai-swe-haws-image"));
-    const hawsCopy = element("div", "ai-swe-haws-copy");
-    hawsCopy.append(element("p", "ai-swe-description", haws.description), renderAiSweFlow(haws.steps));
-    const repoLink = element("a", "foundation-external-link", "View HAWS Repository ↗");
+    container.append(renderHaws(haws));
+  }
+
+  function renderHaws(haws) {
+    const section = renderAiSweSubtopic(haws, "ai-swe-haws");
+
+    const intro = element("div", "haws-intro-grid");
+    const overview = element("div", "haws-overview");
+    const purpose = element("section", "haws-purpose");
+    purpose.append(element("h5", "haws-panel-title", "Purpose"), element("p", "haws-purpose-copy", haws.purpose));
+
+    const context = element("div", "haws-context-grid");
+    const problem = element("section", "haws-context-block");
+    problem.append(element("h5", "haws-panel-title", "Problem"));
+    const problemList = element("ul", "haws-problem-list");
+    haws.problem.forEach(function (item) { problemList.append(element("li", "", item)); });
+    problem.append(problemList);
+    const useCase = element("section", "haws-context-block");
+    useCase.append(element("h5", "haws-panel-title", "Use Case"), element("p", "haws-context-copy", haws.useCase));
+    context.append(problem, useCase);
+    overview.append(purpose, context);
+    intro.append(overview, renderAiSweImage(haws.image, "ai-swe-haws-image"));
+    section.append(intro);
+
+    const architecture = element("section", "haws-block");
+    architecture.append(element("h5", "haws-section-title", "How HAWS Works"));
+    const architectureFlow = element("div", "haws-architecture-flow");
+    architectureFlow.setAttribute("role", "group");
+    architectureFlow.setAttribute("aria-label", "HAWS configures AI environments before people use them directly");
+    architectureFlow.append(element("div", "haws-architecture-node haws-architecture-node--source", haws.architecture.source));
+    architectureFlow.append(element("span", "haws-architecture-arrow", "→"));
+    architectureFlow.append(element("div", "haws-architecture-node", haws.architecture.action));
+    architectureFlow.append(element("span", "haws-architecture-arrow", "→"));
+    const environments = element("div", "haws-environments");
+    haws.architecture.environments.forEach(function (environment) {
+      environments.append(element("div", "haws-architecture-node haws-architecture-node--environment", environment));
+    });
+    architectureFlow.append(environments);
+    architecture.append(architectureFlow, element("p", "haws-architecture-note", haws.architecture.note));
+    section.append(architecture);
+
+    const capabilities = element("section", "haws-block");
+    capabilities.append(element("h5", "haws-section-title", "What HAWS Provides"));
+    const capabilityGrid = element("div", "haws-capabilities");
+    haws.capabilities.forEach(function (capability) {
+      const item = element("article", "haws-capability");
+      item.append(element("h6", "haws-capability-title", capability.title), element("p", "haws-capability-copy", capability.description));
+      capabilityGrid.append(item);
+    });
+    const management = element("p", "haws-management");
+    management.append(element("span", "haws-management-label", "Management"), document.createTextNode(" · " + haws.management.join(" · ")));
+    capabilities.append(capabilityGrid, management);
+    section.append(capabilities);
+
+    const logic = element("section", "haws-block haws-working-logic");
+    logic.append(element("h5", "haws-section-title", "Working Logic"));
+    logic.append(renderHawsStepFlow(haws.taskSteps, "Task flow"));
+    logic.append(renderHawsDecision(haws.capabilityDecision, "capability"));
+    logic.append(element("p", "haws-flow-continues", "Both paths continue to Execute ↓"));
+    logic.append(renderHawsStepFlow(haws.verificationSteps, "Verification flow"));
+    logic.append(renderHawsDecision(haws.verificationDecision, "verification"));
+    section.append(logic);
+
+    const setup = element("section", "haws-block haws-setup");
+    setup.append(element("h5", "haws-section-title", "Setup / System Logic"), renderHawsStepFlow(haws.setupSteps, "HAWS setup flow"));
+    section.append(setup);
+
+    const result = element("section", "haws-block haws-result");
+    result.append(element("h5", "haws-section-title", "Result"));
+    const resultGrid = element("div", "haws-results-grid");
+    haws.results.forEach(function (item) {
+      const card = element("article", "haws-result-item");
+      card.append(element("h6", "haws-result-title", item.title), element("p", "haws-result-copy", item.description));
+      resultGrid.append(card);
+    });
+    result.append(resultGrid, element("p", "haws-outcome", haws.outcome));
+    const repoLink = element("a", "foundation-external-link haws-repository-link", "View HAWS Repository ↗");
     repoLink.href = haws.repository;
     repoLink.target = "_blank";
     repoLink.rel = "noopener noreferrer";
-    hawsCopy.append(repoLink);
-    hawsTop.append(hawsCopy);
-    hawsSection.append(hawsTop);
-    container.append(hawsSection);
+    result.append(repoLink);
+    section.append(result);
+    return section;
+  }
+
+  function renderHawsStepFlow(steps, label) {
+    const flow = element("ol", "haws-step-flow");
+    if (label === "Task flow") flow.classList.add("haws-task-flow");
+    if (label === "Verification flow") flow.classList.add("haws-verification-flow");
+    flow.setAttribute("aria-label", label);
+    steps.forEach(function (step) { flow.append(element("li", "haws-step", step)); });
+    return flow;
+  }
+
+  function renderHawsDecision(decision, name) {
+    const block = element("section", "haws-decision haws-decision--" + name);
+    const title = element("h6", "haws-decision-question", decision.question);
+    const branches = element("div", "haws-decision-branches");
+    [["Yes", decision.yes], ["No", decision.no]].forEach(function (branch) {
+      const item = element("div", "haws-decision-branch");
+      item.append(element("strong", "haws-branch-label", branch[0]), element("span", "haws-branch-copy", branch[1]));
+      branches.append(item);
+    });
+    block.append(title, branches, element("p", "haws-decision-note", name === "capability" ? decision.continuation : "↶ " + decision.retry));
+    return block;
   }
 
   function renderAiSweSubtopic(subtopic, className) {
@@ -363,8 +584,11 @@
   function renderWorkshop(topic, container) {
     container.append(element("p", "workshop-intro", topic.intro));
     const grid = element("div", "workshop-grid");
-    topic.subtopics.forEach(function (subtopic) {
-      const section = element("article", "subtopic-section workshop-item");
+    const activities = topic.subtopics.slice().sort(function (a, b) {
+      return Number(b.id === "cutting-drilling-grinding") - Number(a.id === "cutting-drilling-grinding");
+    });
+    activities.forEach(function (subtopic) {
+      const section = element("article", "subtopic-section workshop-item workshop-item--" + subtopic.id);
       section.id = "subtopic-" + subtopic.id;
       section.tabIndex = -1;
       const titleId = "subtopic-title-" + subtopic.id;
