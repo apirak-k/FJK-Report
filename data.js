@@ -2,14 +2,14 @@
 window.presentationData = {
   weeks: Array.from({ length: 17 }, function (_, index) { return index + 1; }),
   overview: {
-    summary: "[Add a short overview of the internship and its purpose.]",
+    summary: "",
     facts: [
-      { label: "Student", value: "[Student name]" },
-      { label: "University", value: "[University name]" },
-      { label: "Advisor", value: "[University advisor]" },
-      { label: "Company", value: "[Company name]" },
-      { label: "Department", value: "[Department]" },
-      { label: "Internship period", value: "[Start date – end date]" }
+      { label: "Student", value: "" },
+      { label: "University", value: "" },
+      { label: "Advisor", value: "" },
+      { label: "Company", value: "" },
+      { label: "Department", value: "" },
+      { label: "Internship period", value: "" }
     ]
   },
   topics: [
@@ -24,7 +24,6 @@ window.presentationData = {
     { id: "workshop", title: "Workshop" }
   ],
   timeline: {
-    notice: "Layout preview only. These topic/week markers do not describe confirmed internship work.",
     /* Point each marker at a matching content id inside its topic section. */
     activities: [
       { id: "foundation-w1", topicId: "foundation", week: 1, targetId: "detail-foundation" },
@@ -61,9 +60,9 @@ window.presentationData = {
     ]
   },
   swot: [
-    { id: "strengths", title: "Strengths", prompt: "[Add my personal strengths demonstrated during the internship.]", index: "01" },
-    { id: "weaknesses", title: "Weaknesses", prompt: "[Add areas I want to improve.]", index: "02" },
-    { id: "opportunities", title: "Opportunities", prompt: "[Add opportunities or experience I gained from the internship.]", index: "03" },
-    { id: "challenges", title: "Threats / challenges", prompt: "[Add problems, limitations, or challenges I encountered.]", index: "04" }
+    { id: "strengths", title: "Strengths" },
+    { id: "weaknesses", title: "Weaknesses" },
+    { id: "opportunities", title: "Opportunities" },
+    { id: "challenges", title: "Threats / challenges" }
   ]
 };

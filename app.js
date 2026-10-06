@@ -19,7 +19,6 @@
   }
 
   function renderTimeline() {
-    document.getElementById("preview-note").textContent = data.timeline.notice;
     const columns = document.getElementById("gantt-columns");
     columns.append(element("col", "gantt-topic-column"));
     data.weeks.forEach(function () { columns.append(element("col", "gantt-week-column")); });
@@ -36,19 +35,13 @@
     });
 
     const rows = document.getElementById("gantt-rows");
-    data.topics.forEach(function (topic, index) {
+    data.topics.forEach(function (topic) {
       const row = element("tr", "gantt-row");
       const heading = element("th", "gantt-row-heading");
       heading.scope = "row";
       const link = element("a", "topic-row-link");
       link.href = "#topic-" + topic.id;
-      const number = element("span", "topic-row-number", String(index + 1).padStart(2, "0"));
-      number.setAttribute("aria-hidden", "true");
-      link.append(number);
       link.append(element("span", "", topic.title));
-      const arrow = element("span", "topic-row-arrow", "↓");
-      arrow.setAttribute("aria-hidden", "true");
-      link.append(arrow);
       heading.append(link);
       row.append(heading);
 
@@ -62,8 +55,8 @@
           activities.forEach(function (activity, activityIndex) {
             const marker = element("a", "activity-marker");
             marker.href = "#" + activity.targetId;
-            marker.setAttribute("aria-label", "Go to " + topic.title + " activity " + (activityIndex + 1) + " detail placeholder for Week " + week);
-            marker.title = topic.title + " detail placeholder · Week " + week;
+            marker.setAttribute("aria-label", "Go to " + topic.title + " activity " + (activityIndex + 1) + ", Week " + week);
+            marker.title = topic.title + " activity · Week " + week;
             marker.append(element("span", "visually-hidden", "Activity " + (activityIndex + 1)));
             markers.append(marker);
           });
@@ -81,9 +74,7 @@
     const grid = document.getElementById("swot-grid");
     data.swot.forEach(function (item) {
       const card = element("article", "swot-card swot-card--" + item.id);
-      card.append(element("p", "swot-index", item.index));
       card.append(element("h3", "swot-title", item.title));
-      card.append(element("p", "placeholder-copy", item.prompt));
       grid.append(card);
     });
   }
